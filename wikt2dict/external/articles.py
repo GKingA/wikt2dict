@@ -33,10 +33,10 @@ import codecs
 import xml.parsers.expat as sax
 from optparse import OptionParser
 from wiki import *
-import HTMLParser
+from html.parser import HTMLParser
 
 def fprint(x):
-  print x
+  print(x)
 
 def save_article(htmlparser, article, directory):
   f = None
@@ -53,9 +53,9 @@ def save_article(htmlparser, article, directory):
 
 def print_article(htmlparser, article):
   try:
-    print "%%#PAGE " + unicode(article.title).encode("utf-8")
-    print unicode(htmlparser.unescape(article.markup)).encode("utf-8")
-    print "\n\n\f"
+    print("%%#PAGE " + article.title)
+    print(htmlparser.unescape(article.markup))
+    print("\n\n\f")
   except IOError:
     sys.exit(0) # broken stdout => broken pipe
   except Exception as e:
@@ -70,10 +70,10 @@ if __name__ == "__main__":
     (options, args) = parser.parse_args()
 
     if len(args) > 0:
-      print parser.usage
+      print(parser.usage)
       exit(1)
 
-    htmlparser = HTMLParser.HTMLParser()
+    htmlparser = HTMLParser()
     if options.directory != None:
       do_article = lambda a: save_article(htmlparser, a, options.directory)
     else:

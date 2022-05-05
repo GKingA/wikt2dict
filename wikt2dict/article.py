@@ -4,12 +4,12 @@ from collections import defaultdict
 
 template_re = re.compile(r"\{\{[^\}]*\}\}", re.UNICODE)
 default_translation_re = re.compile(
-    ur"\{\{(t[\u00d8|\-\+])\|([^}]+)\}\}", re.UNICODE)
+    r"\{\{(t[\u00d8|\-\+])\|([^}]+)\}\}", re.UNICODE)
 global_features = ["sourcewc", "article", "has_article"]
 
 # tester method
 def uprint(str_):
-    print str_.encode('utf8')
+    print(str_.encode('utf8'))
 
 class ArticleParser(object):
     """ Base class for all article parsers. 
@@ -31,14 +31,13 @@ class ArticleParser(object):
 
     def build_trim_re(self):
         if self.cfg['trim_re']:
-            self.trim_re = re.compile(ur'' + self.cfg['trim_re'].decode('utf8'), 
-                                      re.UNICODE)
+            self.trim_re = re.compile(r'' + self.cfg['trim_re'], re.UNICODE)
 
     def build_skip_re(self):
         if not self.cfg['skip_translation']:
             self.skip_translation_re = None
         else:
-            self.skip_translation_re = re.compile(ur'' + self.cfg['skip_translation'].decode('utf8'), re.UNICODE)
+            self.skip_translation_re = re.compile(r'' + self.cfg['skip_translation'], re.UNICODE)
         if not self.cfg['skip_translation_line']:
             self.skip_translation_line_re = None
         else:

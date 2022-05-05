@@ -27,7 +27,7 @@ class SectionAndArticleParser(ArticleParser):
         if self.cfg.section_langmap:
             f = open(self.cfg.section_langmap)
             for l in f:
-                fields = l.strip().decode('utf8').split('\t')
+                fields = l.strip().split('\t')
                 for langname in fields[1:]:
                     self.section_langmap[langname] = fields[0]
                     self.section_langmap[langname.title()] = fields[0]
@@ -80,7 +80,7 @@ class LangnamesArticleParser(ArticleParser):
         if self.cfg.langnames:
             f = open(self.cfg.langnames)
             for l in f:
-                fields = l.strip().decode('utf8').split('\t')
+                fields = l.strip().split('\t')
                 for langname in fields[1:]:
                     self.mapping[langname] = fields[0]
                     self.mapping[langname.title()] = fields[0]

@@ -12,7 +12,7 @@ Options:
 from docopt import docopt
 from sys import stderr
 from itertools import combinations
-from urllib import urlretrieve
+from urllib.request import urlretrieve
 from os import path
 from subprocess import call
 import logging
@@ -41,7 +41,7 @@ def extract_translations(wc_set):
     logger.info('Extracting translations')
     to_parse = filter(lambda c: c.wc in wc_set, config.configs)
     for cfg in to_parse:
-        print cfg.wc
+        print(cfg.wc)
         wikt = Wiktionary(cfg)
         wikt.parse_articles()
 

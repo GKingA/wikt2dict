@@ -28,8 +28,9 @@ class Wiktionary(object):
         pairs = list()
         for parser in self.parsers:
             for p in parser.extract_translations(title, text):
+                clear = lambda x: x.replace("[[", "").replace("]]", "")
                 if len(p) == 2:
-                    pair = ((self.cfg.wc, title, p[0], p[1]), tuple(parser.cfg.features))
+                    pair = ((self.cfg.wc, clear(title), p[0], clear(p[1])), tuple(parser.cfg.features))
                 elif len(p) == 4:
                     pair = (p, tuple(parser.cfg.features))
                 else:
@@ -63,17 +64,16 @@ class Wiktionary(object):
     def write_all_pairs(self):
         for pair in sorted(self.pairs):
             if self.cfg.verbose_output is True:
-                self.outf.write('\t'.join(pair).encode('utf8') + '\n')
+                self.outf.write('\t'.join(pair) + '\n')
             else:
-                self.outf.write('\t'.join(pair[0:4]).encode('utf8') + '\n')
+                self.outf.write('\t'.join(pair[0:4]) + '\n')
 
     def read_dump(self):
         with open(self.cfg.dump_path) as f:
             title = u''
             article = u''
             page_sep = '%%#PAGE'
-            for l_ in f:
-                l = l_.decode('utf8')
+            for l in f:
                 if l.startswith(page_sep):
                     if title and article:
                         yield title, article

@@ -28,7 +28,7 @@ class Triangulator(object):
             return
         with open(fn) as f:
             for l in f:
-                fd = l.decode('utf8').strip().split('\t')
+                fd = l.strip().split('\t')
                 if len(fd) < 6:
                     continue
                 wc1, w1, wc2, w2, src_wc, src_art = fd[0:6]
@@ -45,9 +45,9 @@ class Triangulator(object):
     def collect_triangles(self):
         for wc2 in self.wikicodes:  # this is the bridge language
             wc1, wc3 = sorted([w for w in self.wikicodes if not w == wc2])
-            for w2, tr in self.pairs[wc2].iteritems():
-                for w1, src1_l in tr[wc1].iteritems():
-                    for w3, src3_l in tr[wc3].iteritems():
+            for w2, tr in self.pairs[wc2].items():
+                for w1, src1_l in tr[wc1].items():
+                    for w3, src3_l in tr[wc3].items():
                         for pair in product(src1_l, src3_l):
                             if wc1 < wc3:
                                 self.triangles[(wc1, w1, wc3, w3)].append((
@@ -64,13 +64,13 @@ class Triangulator(object):
             out_str = ''
             wc1, wc3 = sorted([w for w in self.wikicodes if not w == wc2])
             min_cnt = int(self.cfg.triangle_threshold)
-            for tri, sources in self.triangles.iteritems():
+            for tri, sources in self.triangles.items():
                 if not tri[0] == wc1 or not tri[2] == wc3:
                     continue
                 if len(sources) >= min_cnt:
                     for s in set(sources):
-                        out_str += ('\t'.join(tri).encode('utf8') + '\t' +
-                                    '\t'.join(s).encode('utf8') + '\n')
+                        out_str += ('\t'.join(tri) + '\t' +
+                                    '\t'.join(s) + '\n')
             if out_str:
                 with open(dir_ + '/' + '_'.join([wc1, wc2, wc3]), 'w') as f:
                     f.write(out_str)

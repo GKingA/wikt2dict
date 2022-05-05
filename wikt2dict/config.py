@@ -39,7 +39,7 @@ parser_defaults = {
 }
 
 default_parser_defaults = {
-    'translation_prefix': ur't[\u00f8\+\-]?',
+    'translation_prefix': r't[\u00f8\+\-]?',
     'wc_field': 1,
     'word_field': 2,
     'features': ['defaultparser'],
@@ -78,7 +78,7 @@ class WiktionaryConfig(DictLikeClass):
     configuration class inherits.
     """
     def __init__(self):
-        for key, value in wiktionary_defaults.iteritems():
+        for key, value in wiktionary_defaults.items():
             self[key] = value
         self._parsers = None
         self._parser_configs = None
@@ -139,13 +139,13 @@ class ParserConfig(DictLikeClass):
 
     def __init__(self, wikt_cfg=None, parser_cfg=None):
         self._skip_trans_re = None
-        for key, value in self.defaults.iteritems():
+        for key, value in self.defaults.items():
             self[key] = value
         if parser_cfg:
-            for key, value in parser_cfg.iteritems():
+            for key, value in parser_cfg.items():
                 self[key] = value
         if wikt_cfg:
-            for key, value in wikt_cfg.iteritems():
+            for key, value in wikt_cfg.items():
                 self[key] = value
 
     @property
@@ -155,7 +155,7 @@ class ParserConfig(DictLikeClass):
                 self.blacklist.append(self.placeholder)
             if self.blacklist:
                 self._skip_trans_re = re.compile(
-                    ur'(' + '|'.join(self.blacklist) + ')',
+                    r'(' + '|'.join(self.blacklist) + ')',
                     re.UNICODE)
             else:
                 self._skip_trans_re = ''
@@ -355,7 +355,7 @@ class HebrewConfig(LangnamesWiktionaryConfig):
         self.wc = 'he'
         self.langnames_cfg = {
             'langnames': path.join(base_dir, '../res/langnames/hebrew'),
-            'translation_line': ur'{{\u05ea\|([^|}]+)\|([^}]+)}}',
+            'translation_line': r'{{\u05ea\|([^|}]+)\|([^}]+)}}',
             'translation_re': re.compile(r'([^|]+)', re.UNICODE),
         }
         super(HebrewConfig, self).__init__()
@@ -498,7 +498,7 @@ class GermanConfig(SectionLevelWiktionaryConfig):
         self.allow_synonyms = False
         default_cfg = {
             'trim_re': r'(.*)\#.*(.*)',
-            'translation_prefix': ur'[\xdc\xfc]',
+            'translation_prefix': r'[\xdc\xfc]',
         }
         self._section_parser_configs = [
             [DefaultArticleParser, DefaultParserConfig, default_cfg]
@@ -590,7 +590,7 @@ class GreekConfig(DefaultWiktionaryConfig):
         self.wc = 'el'
         self.default_cfg = {
             'translation_prefix': u'\u03c4',
-            'placeholder': ur'[xX\u03c7\u03a7]{3}',
+            'placeholder': r'[xX\u03c7\u03a7]{3}',
         }
         super(GreekConfig, self).__init__()
 
@@ -609,7 +609,7 @@ class IcelandicConfig(DefaultWiktionaryConfig):
         self.full_name = 'Icelandic'
         self.wc = 'is'
         self.default_cfg = {
-            'translation_prefix': ur'\xfe\xfd\xf0ing',
+            'translation_prefix': r'\xfe\xfd\xf0ing',
         }
         super(IcelandicConfig, self).__init__()
 
@@ -650,7 +650,7 @@ class NorwegianConfig(DefaultWiktionaryConfig):
         self.full_name = 'Norwegian'
         self.wc = 'no'
         self.default_cfg = {
-            'translation_prefix': ur'(?:o|overs|t[\u00f8\+\-]?)',
+            'translation_prefix': r'(?:o|overs|t[\u00f8\+\-]?)',
         }
         super(NorwegianConfig, self).__init__()
 
@@ -705,7 +705,7 @@ class SpanishConfig(DefaultWiktionaryConfig):
         self.wc = 'es'
         self.default_cfg = {
             'translation_prefix': r'(?:trad|t)[\u00f8\+\-]?',
-            'placeholder': ur'[\d\?\-\u2013,]',
+            'placeholder': r'[\d\?\-\u2013,]',
         }
         super(SpanishConfig, self).__init__()
 
@@ -724,7 +724,7 @@ class SwedishConfig(DefaultWiktionaryConfig):
         self.full_name = 'Swedish'
         self.wc = 'sv'
         self.default_cfg = {
-            'translation_prefix': ur'\u00f6.?',
+            'translation_prefix': r'\u00f6.?',
         }
         super(SwedishConfig, self).__init__()
 
@@ -821,7 +821,7 @@ configs = [
 
 
 def get_config_by_wc(wc):
-    cfg_l = filter(lambda x: x.wc == wc, configs)
+    cfg_l = list(filter(lambda x: x.wc == wc, configs))
     if len(cfg_l) > 1:
         # TODO raise exception
         pass
