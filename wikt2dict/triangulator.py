@@ -6,17 +6,17 @@ import wikt2dict.config as config
 
 
 class Triangulator(object):
-
     def __init__(self, triangle_wc):
         self.wikicodes = set(triangle_wc)
         self.cfg = config.WiktionaryConfig()
-        self.pairs = defaultdict(lambda: defaultdict(
-            lambda: defaultdict(lambda: defaultdict(list))))
+        self.pairs = defaultdict(
+            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
+        )
         self.triangles = defaultdict(list)
         self.read_pairs_in_three_langs()
 
     def read_pairs_in_three_langs(self):
-        for wc in self.wikicodes | set(['de', 'lt']):
+        for wc in self.wikicodes | set(["de", "lt"]):
             try:
                 cfg = config.get_config_by_wc(wc)
                 self.read_pairs_in_lang(wc, cfg.output_path)
@@ -28,15 +28,15 @@ class Triangulator(object):
             return
         with open(fn) as f:
             for l in f:
-                fd = l.strip().split('\t')
+                fd = l.strip().split("\t")
                 if len(fd) < 6:
                     continue
                 wc1, w1, wc2, w2, src_wc, src_art = fd[0:6]
                 # converting Mandarin Chinese to Chinese
-                if wc1 == 'cmn':
-                    wc1 = 'zh'
-                if wc2 == 'cmn':
-                    wc2 = 'zh'
+                if wc1 == "cmn":
+                    wc1 = "zh"
+                if wc2 == "cmn":
+                    wc2 = "zh"
                 if not wc1 in self.wikicodes and not wc2 in self.wikicodes:
                     continue
                 self.pairs[wc1][w1][wc2][w2].append((src_wc, src_art))
@@ -50,18 +50,34 @@ class Triangulator(object):
                     for w3, src3_l in tr[wc3].items():
                         for pair in product(src1_l, src3_l):
                             if wc1 < wc3:
-                                self.triangles[(wc1, w1, wc3, w3)].append((
-                                    pair[0][0], pair[0][1], wc2, w2, pair[1][0], pair[1][1]))
+                                self.triangles[(wc1, w1, wc3, w3)].append(
+                                    (
+                                        pair[0][0],
+                                        pair[0][1],
+                                        wc2,
+                                        w2,
+                                        pair[1][0],
+                                        pair[1][1],
+                                    )
+                                )
                             else:
-                                self.triangles[(wc3, w3, wc1, w1)].append((
-                                    pair[0][0], pair[0][1], wc2, w2, pair[1][0], pair[1][1]))
+                                self.triangles[(wc3, w3, wc1, w1)].append(
+                                    (
+                                        pair[0][0],
+                                        pair[0][1],
+                                        wc2,
+                                        w2,
+                                        pair[1][0],
+                                        pair[1][1],
+                                    )
+                                )
 
     def write_triangles(self):
         dir_ = self.get_dir()
         if not path.exists(dir_):
             makedirs(dir_)
         for wc2 in self.wikicodes:
-            out_str = ''
+            out_str = ""
             wc1, wc3 = sorted([w for w in self.wikicodes if not w == wc2])
             min_cnt = int(self.cfg.triangle_threshold)
             for tri, sources in self.triangles.items():
@@ -69,17 +85,16 @@ class Triangulator(object):
                     continue
                 if len(sources) >= min_cnt:
                     for s in set(sources):
-                        out_str += ('\t'.join(tri) + '\t' +
-                                    '\t'.join(s) + '\n')
+                        out_str += "\t".join(tri) + "\t" + "\t".join(s) + "\n"
             if out_str:
-                with open(dir_ + '/' + '_'.join([wc1, wc2, wc3]), 'w') as f:
+                with open(dir_ + "/" + "_".join([wc1, wc2, wc3]), "w") as f:
                     f.write(out_str)
 
     def get_dir(self):
         i = 0
         file_cnt = 1000
         while file_cnt >= 998:
-            dir_ = self.cfg['triangle_dir'] + '/' + str(i)
+            dir_ = self.cfg["triangle_dir"] + "/" + str(i)
             i += 1
             if not path.exists(dir_):
                 break

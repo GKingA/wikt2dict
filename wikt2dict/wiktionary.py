@@ -1,5 +1,4 @@
 class Wiktionary(object):
-
     def __init__(self, cfg):
         self.cfg = cfg
         self.init_parsers()
@@ -11,7 +10,7 @@ class Wiktionary(object):
             self.parsers.append(parser_cl(self.cfg, parser_cfg))
 
     def parse_articles(self, write_immediately=False):
-        with open(self.cfg.output_path, 'w') as self.outf:
+        with open(self.cfg.output_path, "w") as self.outf:
             for title, text in self.read_dump():
                 pairs = self.extract_translations(title, text)
                 if pairs:
@@ -30,27 +29,30 @@ class Wiktionary(object):
             for p in parser.extract_translations(title, text):
                 clear = lambda x: x.replace("[[", "").replace("]]", "")
                 if len(p) == 2:
-                    pair = ((self.cfg.wc, clear(title), p[0], clear(p[1])), tuple(parser.cfg.features))
+                    pair = (
+                        (self.cfg.wc, clear(title), p[0], clear(p[1])),
+                        tuple(parser.cfg.features),
+                    )
                 elif len(p) == 4:
                     pair = (p, tuple(parser.cfg.features))
                 else:
-                    raise Exception('Invalid pair {0}'.format(p))
+                    raise Exception("Invalid pair {0}".format(p))
                 pairs.append(pair)
         return set(pairs)
 
     def skip_article(self, title, text):
         if not title.strip() or not text.strip():
             return True
-        if ':' in title:  # skipping namespaced articles
+        if ":" in title:  # skipping namespaced articles
             return True
         return False
 
     def write_one_article_translations(self, pairs):
         for pair in pairs:
             if self.cfg.verbose_output is True:
-                self.outf.write('\t'.join(pair[0]).encode('utf8') + '\n')
+                self.outf.write("\t".join(pair[0]).encode("utf8") + "\n")
             else:
-                self.outf.write('\t'.join(pair[0:4]).encode('utf8') + '\n')
+                self.outf.write("\t".join(pair[0:4]).encode("utf8") + "\n")
 
     def store_translations(self, pairs):
         for pair, feat in pairs:
@@ -64,21 +66,21 @@ class Wiktionary(object):
     def write_all_pairs(self):
         for pair in sorted(self.pairs):
             if self.cfg.verbose_output is True:
-                self.outf.write('\t'.join(pair) + '\n')
+                self.outf.write("\t".join(pair) + "\n")
             else:
-                self.outf.write('\t'.join(pair[0:4]) + '\n')
+                self.outf.write("\t".join(pair[0:4]) + "\n")
 
     def read_dump(self):
         with open(self.cfg.dump_path) as f:
-            title = u''
-            article = u''
-            page_sep = '%%#PAGE'
+            title = u""
+            article = u""
+            page_sep = "%%#PAGE"
             for l in f:
                 if l.startswith(page_sep):
                     if title and article:
                         yield title, article
                     title = l.split(page_sep)[-1].strip()
-                    article = u''
+                    article = u""
                 else:
                     article += l
             yield title, article

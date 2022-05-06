@@ -27,7 +27,7 @@ class SectionAndArticleParser(ArticleParser):
         if self.cfg.section_langmap:
             f = open(self.cfg.section_langmap)
             for l in f:
-                fields = l.strip().split('\t')
+                fields = l.strip().split("\t")
                 for langname in fields[1:]:
                     self.section_langmap[langname] = fields[0]
                     self.section_langmap[langname.title()] = fields[0]
@@ -43,13 +43,14 @@ class SectionAndArticleParser(ArticleParser):
                 for p in pairs:
                     if self.wikt_cfg.allow_synonyms is False and p[0] == section_lang:
                         continue
-                    translations.extend([(section_lang, title, p[0], p[1])
-                                         for p in pairs])
+                    translations.extend(
+                        [(section_lang, title, p[0], p[1]) for p in pairs]
+                    )
         return set(translations)
 
     def get_sections(self, text):
         section_titles_i = list()
-        lines = text.split('\n')
+        lines = text.split("\n")
         for i, line in enumerate(lines):
             m = self.cfg.section_re.search(line)
             if m:
@@ -59,17 +60,20 @@ class SectionAndArticleParser(ArticleParser):
             return
         for i, (ind, lang) in enumerate(section_titles_i[:-1]):
             if lang in self.section_langmap:
-                yield self.section_langmap[lang], \
-                    '\n'.join(lines[ind:section_titles_i[i + 1][0]])
+                yield self.section_langmap[lang], "\n".join(
+                    lines[ind : section_titles_i[i + 1][0]]
+                )
         last_lang = section_titles_i[-1][1]
         if last_lang in self.section_langmap:
-            yield self.section_langmap[last_lang], '\n'.join(lines[section_titles_i[-1][0]:])
+            yield self.section_langmap[last_lang], "\n".join(
+                lines[section_titles_i[-1][0] :]
+            )
 
 
 class LangnamesArticleParser(ArticleParser):
     """
     Class for parsing Wiktionaries that use simple lists for translations
-    instead of templates """
+    instead of templates"""
 
     def __init__(self, wikt_cfg, parser_cfg, filter_langs=None):
         ArticleParser.__init__(self, wikt_cfg, parser_cfg, filter_langs)
@@ -80,7 +84,7 @@ class LangnamesArticleParser(ArticleParser):
         if self.cfg.langnames:
             f = open(self.cfg.langnames)
             for l in f:
-                fields = l.strip().split('\t')
+                fields = l.strip().split("\t")
                 for langname in fields[1:]:
                     self.mapping[langname] = fields[0]
                     self.mapping[langname.title()] = fields[0]
@@ -106,10 +110,10 @@ class LangnamesArticleParser(ArticleParser):
         return set(translations)
 
     def trim_translation(self, word):
-        return word.replace('\n', ' ').strip()
+        return word.replace("\n", " ").strip()
 
     def get_entities(self, trans_field):
-        trimmed = self.cfg.bracket_re.sub('', trans_field)
+        trimmed = self.cfg.bracket_re.sub("", trans_field)
         entities = list()
         for e in self.cfg.delimiter_re.split(trimmed):
             for m in self.cfg.translation_re.finditer(e):
@@ -128,7 +132,6 @@ class LangnamesArticleParser(ArticleParser):
 
 
 class DefaultArticleParser(ArticleParser):
-
     def extract_translations(self, title, text):
         translations = list()
         for tr in self.cfg.trad_re.finditer(text):
@@ -147,6 +150,6 @@ class DefaultArticleParser(ArticleParser):
     def skip_word(self, word):
         if self.cfg.skip_translation_re and self.cfg.skip_translation_re.search(word):
             return True
-        if '\n' in word:
+        if "\n" in word:
             return True
         return False
