@@ -50,9 +50,9 @@ class Wiktionary(object):
     def write_one_article_translations(self, pairs):
         for pair in pairs:
             if self.cfg.verbose_output is True:
-                self.outf.write("\t".join(pair[0]).encode("utf8") + "\n")
+                self.outf.write("\t".join(pair[0]) + "\n")
             else:
-                self.outf.write("\t".join(pair[0:4]).encode("utf8") + "\n")
+                self.outf.write("\t".join(pair[0:4]) + "\n")
 
     def store_translations(self, pairs):
         for pair, feat in pairs:

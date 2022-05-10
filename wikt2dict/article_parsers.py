@@ -136,7 +136,7 @@ class DefaultArticleParser(ArticleParser):
         translations = list()
         for tr in self.cfg.trad_re.finditer(text):
             wc = tr.group(self.cfg.wc_field)
-            if not wc or not wc.strip() or not wc in self.wikt_cfg.wikicodes:
+            if not wc or not wc.strip() or wc not in self.wikt_cfg.wikicodes:
                 continue
             word = tr.group(self.cfg.word_field)
             if not word or not word.strip():
